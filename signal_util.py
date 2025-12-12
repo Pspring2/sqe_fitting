@@ -14,6 +14,9 @@ def smoothen(data: np.ndarray, t = 1, numtaps: int = 11, smoothing_width: float 
     Returns:
         np.ndarray: smoothened data
     """
+    if smoothing_width is None:
+        return data  # no smoothing if smoothing_width is None
+
     if isinstance(t, np.ndarray):
         dt = t[1] - t[0]
     elif isinstance(t, (float, int)):

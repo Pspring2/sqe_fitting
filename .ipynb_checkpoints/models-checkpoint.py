@@ -484,8 +484,7 @@ class DoubleResonatorReflectionModel_Series(lmfit.model.Model):
 # Composite models
 class DoubleResonatorReflectionModel_Series_g_e():
     
-    def __init__(self, omega_r, omega_p, kappa_in_r, kappa_in_p, kappa_p, J, 
-                 fit_phase_only = False, fit_group_delay_only = False, reflection_type = 'normal'):
+    def __init__(self, omega_r, omega_p, kappa_in_r, kappa_in_p, kappa_p, J, fit_phase_only = False, fit_group_delay_only = False, reflection_type = 'normal'):
 
         self.params = lmfit.Parameters()
         self.omega_r = omega_r
@@ -509,7 +508,7 @@ class DoubleResonatorReflectionModel_Series_g_e():
         ## set the g parameters
         state = 'g'
         self.params.add('{}_kappa_p'.format(state), value = self.kappa_p, min=max(0, self.kappa_p - 40), max = 140)
-        self.params.add('{}_J'.format(state), value = self.J, min= 20, max = 45) ## min=max(0, self.J - 15), max = self.J + 15
+        self.params.add('{}_J'.format(state), value = self.J, min= 20, max = 40) ## min=max(0, self.J - 15), max = self.J + 15
         self.params.add('{}_omega_r'.format(state), value = self.omega_r, min=self.omega_r - 80, max = self.omega_r + 80) ## min=self.omega_r - 15, max = self.omega_r + 15
         self.params.add('{}_omega_p'.format(state), value = self.omega_p, min=self.omega_p - 80, max = self.omega_p + 80) ## min=self.omega_p - 15, max = self.omega_p + 15
         if self.fit_phase_only: 
@@ -666,19 +665,15 @@ class DoubleResonatorReflectionModel_Series_g_e():
             theta = params['{}_theta'.format(state)].value
             reflection_factor = params['{}_reflection_factor'.format(state)].value
                     
-            val = double_resonator_reflection_series(omega, omega_r, kappa_in_r, omega_p, kappa_in_p, kappa_p, J, 
-                                                     a, a_grad, tau, theta, reflection_factor=reflection_factor)
+            val = double_resonator_reflection_series(omega, omega_r, kappa_in_r, omega_p, kappa_in_p, kappa_p, J, a, a_grad, tau, theta, reflection_factor=reflection_factor)
 
             if self.fit_phase_only:
                 val = np.unwrap(np.angle(val))
 
             if self.fit_group_delay_only:
                 delta = 0.1
-                val1 = double_resonator_reflection_series(omega + delta, omega_r, kappa_in_r, omega_p, kappa_in_p, kappa_p, J, 
-                                                          a, a_grad, tau, theta, reflection_factor=reflection_factor)
-                
-                val2 = double_resonator_reflection_series(omega - delta, omega_r, kappa_in_r, omega_p, kappa_in_p, kappa_p, J, 
-                                                          a, a_grad, tau, theta, reflection_factor=reflection_factor)
+                val1 = double_resonator_reflection_series(omega + delta, omega_r, kappa_in_r, omega_p, kappa_in_p, kappa_p, J, a, a_grad, tau, theta, reflection_factor=reflection_factor)
+                val2 = double_resonator_reflection_series(omega - delta, omega_r, kappa_in_r, omega_p, kappa_in_p, kappa_p, J, a, a_grad, tau, theta, reflection_factor=reflection_factor)
 
                 val = (np.unwrap(np.angle(val1)) - np.unwrap(np.angle(val2)))/(2*delta)
 
